@@ -11,7 +11,7 @@ import '../../app/globals.css'
 import { NFTStorage } from 'nft.storage';
 import { Col, Container, Row } from 'react-bootstrap';
 const NFT_STORAGE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGE2ZjQ3OUI2YmFiM0U5NEE5OGM3RWJjOWZDRjcxMzEyNmUxQ2MwMzEiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY5OTgzNjk5NjY3NCwibmFtZSI6IkNsb3NlZE9jZWFuMSJ9.h30pX6mDCw8OqU2-DEFDeyn2ibiWPXH08Sy_8wFbGtU';
-const AuctionHouseAddress = '0x2bF7bA7e0e52dC60Cf586de1a3A84bbac9aF8F45';
+const AuctionHouseAddress = '0x347F1B02aB1266b48B0A094239168fCcD831414d';
 
 interface Collection {
     contractAddress: string,
@@ -64,7 +64,7 @@ export default function CreateModal({ show, handleClose }: { show: boolean, hand
             const nftStorage = new NFTStorage({ token: NFT_STORAGE_KEY });
             const response = await nftStorage.store(tokenData)
             const contract = new Contract(contractAddress, DigitalItemAbi.abi, signer);
-            const tx = await contract.createItem(response.url);
+            const tx = await contract.createItem(response.url, AuctionHouseAddress, parseUnits('1', 18));
             await tx.wait();
         } catch (err) {
             console.error(err);

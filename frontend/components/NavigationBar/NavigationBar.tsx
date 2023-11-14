@@ -34,7 +34,7 @@ export default function NavigationBar() {
                 <NavLink href="/">Home</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink href="/owned">Owned</NavLink>
+                <NavLink href="/created">Created</NavLink>
               </NavItem>
             </Nav>
           </Container>

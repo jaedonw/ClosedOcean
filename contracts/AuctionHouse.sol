@@ -12,8 +12,18 @@ contract AuctionHouse {
         string symbol
     );
 
+    event ItemCreated(
+        address indexed owner,
+        uint256 indexed tokenId,
+        string tokenURI
+    );
+
     function createCollection(address owner, string memory name, string memory symbol) public {
         emit CollectionCreated(msg.sender, owner, name, symbol);
+    }
+
+    function createItem(address owner, uint256 tokenId, string memory tokenURI) public {
+        emit ItemCreated(owner, tokenId, tokenURI);
     }
 
     /**

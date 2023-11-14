@@ -1,7 +1,7 @@
 'use client';
 import { Container } from 'react-bootstrap';
 import { useAddress, useSigner } from '../../model/SignerContext';
-import './Owned.css';
+import './created.css';
 
 export default function Owned() {
     const signer = useSigner();
@@ -11,6 +11,7 @@ export default function Owned() {
         <>
             {(signer && address) ? (
                 <Container>
+                    
                 </Container>
             ) : (
                 <Container>

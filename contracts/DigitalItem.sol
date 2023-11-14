@@ -41,11 +41,17 @@ contract DigitalItem is ERC721URIStorage {
     /**
      * TODO
      */
-    function createItem(string memory tokenURI) public {
-        nextTokenId++;
+    function createItem(string memory tokenURI, address auctionHouse) public {
         _safeMint(msg.sender, nextTokenId);
         _setTokenURI(nextTokenId, tokenURI);
-        // items you've created and haven't listed yet or ones you've bought
-        
+        (bool success, bytes memory data) = auctionHouse.call(
+            abi.encodeWithSignature(
+                "createItem(address,uint256,string)",
+                msg.sender,
+                nextTokenId,
+                tokenURI
+            )
+        );
+        nextTokenId++;
     }
 }
