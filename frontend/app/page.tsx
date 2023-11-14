@@ -1,23 +1,14 @@
-import { Navbar, Container, Nav, Button, NavItem, NavLink } from 'react-bootstrap';
+'use client';
+import { ethers, Contract } from "ethers";
+import AuctionCoinAbi from '../contracts/AuctionCoin.json';
+import { useSigner } from '../model/SignerContext';
+import { sign } from "crypto";
+
 
 export default function Home() {
+  const signer = useSigner();
+
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
-      <Container>
-        <Nav>
-          <NavItem>
-            <NavLink href="/">Home</NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink href="/owned">Owned</NavLink>
-          </NavItem>
-        </Nav>
-      </Container>
-      <Container className="justify-content-end">
-        <Button>Create</Button>
-        <Button>Mint AUC</Button>
-        <Button>Connect MetaMask</Button>
-      </Container>
-    </Navbar>
+    <div>test</div>
   )
 }
