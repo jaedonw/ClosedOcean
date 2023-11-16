@@ -56,7 +56,7 @@ export default function MintModal({ show, handleClose }: { show: boolean, handle
                 <Form>
                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                         <Form.Label>Enter an amount of AUC to mint to your account.</Form.Label>
-                        <Form.Control type="number" placeholder="0" value={amount} onChange={e => setAmount(e.target.value)} />
+                        <Form.Control type="number" placeholder="0" value={amount} onChange={e => setAmount(e.target.value as any)} />
                     </Form.Group>
                 </Form>
             </Modal.Body>
