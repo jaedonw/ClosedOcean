@@ -34,7 +34,7 @@ export function SignerProvider({ children }: { children: React.ReactNode }) {
             try {
                 const provider = new ethers.BrowserProvider(window.ethereum);
                 const signer = await provider.getSigner()
-                setSigner(signer);
+                setSigner(signer as any);
                 setAddress(await signer.getAddress());
             } catch (err) {
                 console.error(err);
