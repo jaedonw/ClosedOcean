@@ -1,11 +1,11 @@
 'use client';
-import { Navbar, Container, Nav, Button, NavItem, NavLink, NavbarBrand } from 'react-bootstrap';
+import { Navbar, Container, Button, NavbarBrand } from 'react-bootstrap';
 import { useAddress, useConnectWallet, useSigner } from '../../model/SignerContext';
 import './NavigationBar.css';
 import { useState } from 'react';
 import MintModal from '../MintModal/MintModal';
 import CreateModal from '../CreateModal/CreateModal';
-import { ethers } from 'ethers';
+import SettingsModal from '../SettingsModal/SettingsModal';
 
 export default function NavigationBar() {
   const connectWallet = useConnectWallet();
@@ -13,6 +13,7 @@ export default function NavigationBar() {
   const signer = useSigner();
   const [showMintModal, setShowMintModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
 
   return (
     <>
@@ -27,19 +28,10 @@ export default function NavigationBar() {
               className="d-inline-block align-top"
             />
             ClosedOcean
-          </NavbarBrand>|
-          <Container>
-            <Nav>
-              <NavItem>
-                <NavLink href="/">Home</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink href="/created">Created</NavLink>
-              </NavItem>
-            </Nav>
-          </Container>
+          </NavbarBrand>
         </Container>
         <Container className="justify-content-end flex-gap">
+          <Button disabled={!address} onClick={() => setShowSettingsModal(true)}>Settings</Button>
           <Button disabled={!address} onClick={() => setShowCreateModal(true)}>Create</Button>
           <Button disabled={!address} onClick={() => setShowMintModal(true)}>Mint AUC</Button>
           {address ? address : <Button onClick={connectWallet}>Connect MetaMask</Button>}
@@ -47,6 +39,7 @@ export default function NavigationBar() {
       </Navbar>
       <MintModal show={showMintModal} handleClose={() => setShowMintModal(false)} />
       {signer && <CreateModal show={showCreateModal} handleClose={() => setShowCreateModal(false)} />}
+      {signer && <SettingsModal show={showSettingsModal} handleClose={() => setShowSettingsModal(false)} />}
     </>
   )
 }

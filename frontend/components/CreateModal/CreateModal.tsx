@@ -2,16 +2,17 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { useEffect, useState } from 'react';
-import { Contract, ContractFactory, formatUnits, parseUnits } from 'ethers';
+import { Contract, ContractFactory } from 'ethers';
 import { useAddress, useSigner } from '../../model/SignerContext';
 import DigitalItemAbi from '../../model/contracts/DigitalItem.json';
 import AuctionHouseAbi from '../../model/contracts/AuctionHouse.json';
 import '../../app/globals.css'
 
 import { NFTStorage } from 'nft.storage';
-import { Col, Container, Row } from 'react-bootstrap';
-const NFT_STORAGE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGE2ZjQ3OUI2YmFiM0U5NEE5OGM3RWJjOWZDRjcxMzEyNmUxQ2MwMzEiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY5OTgzNjk5NjY3NCwibmFtZSI6IkNsb3NlZE9jZWFuMSJ9.h30pX6mDCw8OqU2-DEFDeyn2ibiWPXH08Sy_8wFbGtU';
-const AuctionHouseAddress = '0x347F1B02aB1266b48B0A094239168fCcD831414d';
+import { Col, Row } from 'react-bootstrap';
+import disablePage from '@/app/utils';
+const NFT_STORAGE_KEY = process.env.NFT_STORAGE_KEY as string;
+const AuctionHouseAddress = process.env.auctionHouseAddress as string;
 
 interface Collection {
     contractAddress: string,
@@ -23,7 +24,6 @@ export default function CreateModal({ show, handleClose }: { show: boolean, hand
     const [collections, setCollections] = useState<Collection[]>([]);
     const signer = useSigner();
     const address = useAddress();
-    const [loading, setLoading] = useState(false);
 
     const fetchCollections = async () => {
         try {
@@ -53,29 +53,29 @@ export default function CreateModal({ show, handleClose }: { show: boolean, hand
 
     const handleCreate = async (event: any) => {
         event.preventDefault();
-        setLoading(true);
+        disablePage(true);
         try {
             const contractAddress = event.target[0].value;
             const tokenData = {
                 image: event.target[1].files[0],
                 name: event.target[2].value,
                 description: event.target[3].value,
-            }
+            };
             const nftStorage = new NFTStorage({ token: NFT_STORAGE_KEY });
-            const response = await nftStorage.store(tokenData)
+            const response = await nftStorage.store(tokenData);
             const contract = new Contract(contractAddress, DigitalItemAbi.abi, signer);
-            const tx = await contract.createItem(response.url, AuctionHouseAddress, parseUnits('1', 18));
+            const tx = await contract.createItem(response.url);
             await tx.wait();
         } catch (err) {
             console.error(err);
         }
-        setLoading(false);
+        disablePage(false);
         handleClose();
     }
 
     const handleCreateCollection = async (event: any) => {
         event.preventDefault();
-        setLoading(true);
+        disablePage(true);
         try {
             const contractFactory = new ContractFactory(DigitalItemAbi.abi, DigitalItemAbi.bytecode, signer);
             const contract = await contractFactory.deploy(
@@ -88,7 +88,7 @@ export default function CreateModal({ show, handleClose }: { show: boolean, hand
         } catch (err) {
             console.error(err);
         }
-        setLoading(false);
+        disablePage(false);
     }
 
     return (
@@ -98,7 +98,6 @@ export default function CreateModal({ show, handleClose }: { show: boolean, hand
             centered
             backdrop="static"
             keyboard={false}
-            className={loading ? 'disabled' : ''}
         >
             <Modal.Header closeButton>
                 <Modal.Title>Create Digital Item</Modal.Title>
@@ -116,7 +115,7 @@ export default function CreateModal({ show, handleClose }: { show: boolean, hand
                             <Form.Control type="text" placeholder="MCN" required />
                         </Form.Group>
                     </Row>
-                    <Button variant="primary" type="submit" className="mb-3" disabled={loading}>
+                    <Button variant="primary" type="submit" className="mb-3">
                         Create collection
                     </Button>
                 </Form>
@@ -145,10 +144,10 @@ export default function CreateModal({ show, handleClose }: { show: boolean, hand
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose} disabled={loading}>
+                    <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" type="submit" disabled={loading}>
+                    <Button variant="primary" type="submit">
                         Create item
                     </Button>
                 </Modal.Footer>

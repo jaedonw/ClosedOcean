@@ -1,14 +1,30 @@
 'use client';
-import { ethers, Contract } from "ethers";
-import AuctionCoinAbi from '../contracts/AuctionCoin.json';
 import { useSigner } from '../model/SignerContext';
-import { sign } from "crypto";
-
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+import './globals.css'
+import Auctions from '../components/Auctions/Auctions';
+import Created from '../components/Created/Created';
 
 export default function Home() {
   const signer = useSigner();
 
   return (
-    <div>test</div>
+    <div className="page-border">
+      <Tabs
+        defaultActiveKey="auctions"
+        className="mb-3"
+        unmountOnExit={true}
+      >
+        <Tab eventKey="auctions" title="Auctions">
+          {!signer && <div>Connect MetaMask wallet</div>}
+          {signer && <Auctions />}
+        </Tab>
+        <Tab eventKey="created" title="Owned">
+          {!signer && <div>Connect MetaMask wallet</div>}
+          {signer && <Created />}
+        </Tab>
+      </Tabs>
+    </div>
   )
 }

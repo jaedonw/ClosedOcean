@@ -1,37 +1,42 @@
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Contract, formatUnits, parseUnits } from 'ethers';
-import { useAddress, useSigner } from '../../model/SignerContext';
+import { useAddress, useConnectWallet, useSigner } from '../../model/SignerContext';
 import AuctionCoinAbi from '../../model/contracts/AuctionCoin.json';
 import '../../app/globals.css'
+import disablePage from '@/app/utils';
 
 export default function MintModal({ show, handleClose }: { show: boolean, handleClose: () => void }) {
     const [amount, setAmount] = useState(0);
     const [balance, setBalance] = useState('0');
-    const [loading, setLoading] = useState(false);
     const signer = useSigner();
     const address = useAddress();
+    const connectWallet = useConnectWallet();
     // TODO: remove hardcoded address
-    const contract = new Contract('0x195438602ee98ca4D024E1d3dEcD4CB46e735DeD', AuctionCoinAbi.abi, signer);
-    if (address) {
-        contract.balanceOf(address).then((balance: any) => {
-            contract.decimals().then((decimals: any) => {
-                setBalance(formatUnits(balance, decimals));
+    const contract = new Contract(process.env.auctionCoinAddress as string, AuctionCoinAbi.abi, signer);
+    try {
+        if (address) {
+            contract.balanceOf(address).then((balance: any) => {
+                contract.decimals().then((decimals: any) => {
+                    setBalance(formatUnits(balance, decimals));
+                });
             });
-        });
+        }
+    } catch (err) {
+        console.error(err);
     }
 
     const handleMint = async () => {
-        setLoading(true);
+        disablePage(true);
         try {
             const tx = await contract.mint(parseUnits(amount.toString(), 18));
             await tx.wait();
         } catch (err) {
             console.error(err);
         }
-        setLoading(false);
+        disablePage(false);
         handleClose();
     }
 
@@ -42,7 +47,6 @@ export default function MintModal({ show, handleClose }: { show: boolean, handle
             centered
             backdrop="static"
             keyboard={false}
-            className={loading ? 'disabled' : ''}
         >
             <Modal.Header closeButton>
                 <Modal.Title>Mint AUC</Modal.Title>
@@ -57,10 +61,10 @@ export default function MintModal({ show, handleClose }: { show: boolean, handle
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose} disabled={loading}>
+                <Button variant="secondary" onClick={handleClose}>
                     Close
                 </Button>
-                <Button variant="primary" type="submit" disabled={amount <= 0} onClick={handleMint} disabled={loading}>
+                <Button variant="primary" type="submit" disabled={amount <= 0} onClick={handleMint}>
                     Mint
                 </Button>
             </Modal.Footer>

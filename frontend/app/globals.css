@@ -1,4 +1,22 @@
 .disabled {
   opacity: 0.75;
-  pointer-events: none !important;
+  pointer-events: none!important;
+}
+
+.disabled .modal-content {
+  pointer-events: none!important;
+}
+
+.page-border {
+  margin: 25px;
+}
+
+.flex-container {
+  display: flex;
+  gap: 10px;
+}
+
+.section-heading {
+  font-size: 30px;
+  font-weight: 600;
 }

@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { MetaMaskInpageProvider } from "@metamask/providers";
 
@@ -39,8 +39,30 @@ export function SignerProvider({ children }: { children: React.ReactNode }) {
             } catch (err) {
                 console.error(err);
             }
+
+            window.ethereum.on('accountsChanged', () => {
+                window.location.reload();
+            });
+
+            window.ethereum.on('disconnect', () => {
+                window.location.reload();
+            });
         }
     }
+
+    const checkForAccounts = async () => {
+        if (window.ethereum != null) {
+            const provider = new ethers.BrowserProvider(window.ethereum);
+            const addresses = await provider.listAccounts();
+            if (addresses.length > 0) {
+                connectWallet();
+            }
+        }
+    }
+
+    useEffect(() => {   
+        checkForAccounts();
+    }, []);
 
     return (
         <SignerContext.Provider value={signer as any}>
