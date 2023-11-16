@@ -1,0 +1,8 @@
+.flex-gap {
+    gap: 10px!important;
+}
+
+.center-text {
+    display: flex;
+    align-items: center;
+}
